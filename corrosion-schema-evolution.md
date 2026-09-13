@@ -17,21 +17,23 @@ Conceptually, the rollout could look like this:
 1. Publish schema version N+1
             |
             v
-2. Distribute and apply N+1 to the active Corrosion nodes
+2. Distribute and apply N+1 to Corrosion nodes
             |
             v
-3. Verify that the active replication set is compatible with N+1
+3. Deploy application version N+1
             |
             v
-4. Deploy application version N+1
+4. Enforce schema compatibility locally as Corrosion nodes
+   and application workers become ready for N+1 traffic
             |
             v
-5. Allow writers to start using N+1 features
+5. Local writers start using N+1 features only after
+   local compatibility has been established
 ```
 
 The important invariant is:
 
-> Application data requiring schema N+1 must not be generated until the active replication set is capable of applying it.
+> Global agreement on schema readiness is not required; each participant must establish local compatibility before becoming active for traffic that depends on that schema.
 
 This keeps schema coordination separate from the normal data-replication path and avoids requiring schema propagation itself to have the same semantics as application-data gossip.
 
